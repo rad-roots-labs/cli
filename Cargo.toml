@@ -31,6 +31,7 @@ radroots-nostr-signer = { path = "../../../../foundation/libs/rs/radroots/crates
 radroots-protected-store = { path = "../../../../foundation/libs/rs/radroots/crates/protected-store", features = ["std"] }
 radroots-replica-db = { path = "../../../../foundation/libs/rs/radroots/crates/replica-db" }
 radroots-replica-sync = { path = "../../../../foundation/libs/rs/radroots/crates/replica-sync" }
+radroots-runtime-paths = { path = "../../../../foundation/libs/rs/radroots/crates/runtime-paths" }
 radroots-secret-vault = { path = "../../../../foundation/libs/rs/radroots/crates/secret-vault", features = ["std", "os-keyring"] }
 radroots-sql-core = { path = "../../../../foundation/libs/rs/radroots/crates/sql-core", features = ["native"] }
 radroots-trade = { path = "../../../../foundation/libs/rs/radroots/crates/trade" }
