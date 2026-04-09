@@ -1,0 +1,13 @@
+# radroots_cli
+
+This is the README for the `radroots_cli` a command-line utility that
+exposes a set of commands to interact with the Rad Roots network.
+
+## Copyright
+
+Except as otherwise noted, all files in the `radroots_cli` distribution are
+
+    Copyright (c) 2020-2026 Tyson Lupul and others.
+
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see LICENSE included in the `radroots_cli` distribution.
