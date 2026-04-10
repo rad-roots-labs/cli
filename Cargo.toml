@@ -31,6 +31,7 @@ radroots_nostr_signer = { path = "../../../../foundation/libs/rs/radroots/crates
 radroots_protected_store = { path = "../../../../foundation/libs/rs/radroots/crates/protected_store", features = ["std"] }
 radroots_replica_db = { path = "../../../../foundation/libs/rs/radroots/crates/replica_db" }
 radroots_replica_sync = { path = "../../../../foundation/libs/rs/radroots/crates/replica_sync" }
+radroots_runtime_distribution = { path = "../../../../foundation/libs/rs/radroots/crates/runtime_distribution" }
 radroots_runtime_manager = { path = "../../../../foundation/libs/rs/radroots/crates/runtime_manager" }
 radroots_runtime_paths = { path = "../../../../foundation/libs/rs/radroots/crates/runtime_paths" }
 radroots_secret_vault = { path = "../../../../foundation/libs/rs/radroots/crates/secret_vault", features = ["std", "os-keyring"] }
@@ -46,4 +47,6 @@ zeroize = "1.8"
 
 [dev-dependencies]
 assert_cmd = "2.0"
+flate2 = "1"
+tar = "0.4"
 tempfile = "3.17"
