@@ -1,5 +1,5 @@
 [package]
-name = "radroots-cli"
+name = "radroots_cli"
 version = "0.1.0"
 edition = "2024"
 authors = ["triesap npub1tr33s4tj2le2kk9yzhfphdtss26gyn8kv7savnnjhj794nqp333q8e7grr"]

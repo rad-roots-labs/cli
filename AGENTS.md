@@ -1,6 +1,6 @@
-# radroots-cli - code directives
+# radroots_cli - code directives
 
-- this repo defines `radroots-cli`, the command-line interface to the Radroots network; the primary binary is `radroots`
+- this repo defines `radroots_cli`, the command-line interface to the Radroots network; the primary binary is `radroots`
 - treat this repo root as the source of truth for runtime, release, validation, and documentation
 - keep docs and manifests honest about current implementation status and documented command surfaces
 - prefer the smallest coherent change that fully addresses the request; do not mix unrelated cleanup, speculative refactors, or roadmap work into the same change
