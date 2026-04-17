@@ -26,6 +26,10 @@ Buy from the market:
 - `market update|search|view`
 - `order create|view|list|submit|watch|cancel|history`
 
+`order cancel` is currently a truthful availability surface: it explains why
+durable cancel remains unavailable until the local order read plane persists
+the required trade-chain references.
+
 Accounts and settings:
 
 - `account create|view|list|select`

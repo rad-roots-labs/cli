@@ -42,7 +42,8 @@ Buy from the market:
 - `order submit <order>` submits a draft
 - `order submit <order> --watch` submits and appends human watch snapshots
 - `order watch <order>` watches a submitted order
-- `order cancel <order>` cancels a submitted order
+- `order cancel <order>` reports current durable cancel availability for a
+  submitted order
 - `order history` prints submitted order history
 
 Accounts and settings:
