@@ -48,7 +48,17 @@ Buy from the market:
 
 Accounts and settings:
 
-- `account create`, `account view`, `account list`, and `account select`
+- `account create` creates a secret-backed local account
+- `account import <path>` imports a watch-only local account from a public
+  identity or identity file
+- `account view` reports the resolved account and whether it came from the
+  stored default
+- `account list` lists local accounts and shows which one is the stored default
+- `account select <selector>` sets the stored default account
+- `account clear-default` clears the stored default account without deleting
+  stored accounts
+- `account remove <selector>` removes one stored account and clears the stored
+  default when that account was active
 - `config show`
 
 ## Preserved Compatibility Surface

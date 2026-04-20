@@ -32,7 +32,7 @@ the required trade-chain references.
 
 Accounts and settings:
 
-- `account create|view|list|select`
+- `account create|import|view|list|select|clear-default|remove`
 - `config show`
 
 Advanced and troubleshooting families remain available:
