@@ -84,10 +84,13 @@ concrete targets return `not_found` with exit code `4`. Missing actor or signer
 authority returns the applicable account, signer, or provider error. Malformed
 targets return `validation_failed`.
 
-Relay-required trade mutations keep local validation and dry-run preflight.
-Non-dry `farm publish`, `listing publish`, `listing archive`, and
-`order submit` return `operation_unavailable` until direct Nostr relay
-publication is implemented.
+Relay-required seller mutations keep local validation and dry-run preflight.
+Non-dry `farm publish`, `listing publish`, and `listing archive` require
+`--approval-token`, a selected secret-backed local account, and at least one
+configured relay from `--relay` or runtime config. Successful publish output
+reports event ids, event kinds, target relays, acknowledged relays, and failed
+relays. Non-dry `order submit` remains deferred and returns
+`operation_unavailable`.
 
 Read and inspection commands may return successful `missing` views when no
 mutation was requested.
@@ -223,5 +226,8 @@ LISTING_FILE="$(jq -r '.result.file' listing-create.json)"
 radroots --format json listing list
 radroots --format json listing validate "$LISTING_FILE"
 radroots --format json --dry-run listing publish "$LISTING_FILE"
-radroots --format json --dry-run listing archive "$LISTING_FILE"
+RELAY_URL="ws://127.0.0.1:8080"
+radroots --format json --relay "$RELAY_URL" --approval-token approve farm publish
+radroots --format json --relay "$RELAY_URL" --approval-token approve listing publish "$LISTING_FILE"
+radroots --format json --relay "$RELAY_URL" --approval-token approve listing archive "$LISTING_FILE"
 ```
