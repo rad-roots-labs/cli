@@ -40,19 +40,18 @@ Top-level namespaces:
 
 ## Signer Runtime Mode
 
-Signer mode is selected by runtime configuration. The default mode is `local`,
-which uses the selected local account signer. Use `RADROOTS_SIGNER=local` or
-this app or workspace config:
+The supported signer mode is `local`, which uses the selected local account
+signer. Use `RADROOTS_SIGNER=local` or this app or workspace config:
 
 ```toml
 [signer]
 mode = "local"
 ```
 
-Inspect the selected mode with `radroots --format json signer status get`. MYC
-configuration remains guarded by tests for status parsing and no-fallback
-behavior, but remote signer success flows are not part of the documented public
-workflow.
+Inspect the selected mode with `radroots --format json signer status get`.
+MYC-selected configuration fails closed with `signer_mode_deferred` and must not
+execute the configured MYC binary. Remote signer success flows and public
+signer-session lifecycle commands are deferred.
 
 Machine-readable command output uses the standard envelope:
 

@@ -42,7 +42,7 @@ remote signer approval.
 ## Signer Runtime Mode
 
 The `signer status get` operation reports signer mode and readiness. The
-default signer mode is `local`, which uses the selected local account signer.
+supported signer mode is `local`, which uses the selected local account signer.
 Signer mode is selected by runtime configuration:
 
 ```text
@@ -54,9 +54,9 @@ RADROOTS_SIGNER=local
 mode = "local"
 ```
 
-MYC configuration remains covered by guardrail tests for status parsing and
-no-fallback behavior. Remote signer success flows are not part of the documented
-public workflow.
+MYC-selected configuration fails closed with `signer_mode_deferred` and must
+not execute the configured MYC binary. Remote signer success flows and public
+signer-session lifecycle commands are deferred.
 
 ## Operations
 
@@ -131,7 +131,7 @@ Buyer operations:
 - `basket item remove [basket-id] [item-id]`
 - `basket validate [basket-id]`
 - `basket quote create [basket-id]`
-- `order submit [order-id] [--watch]`
+- `order submit [order-id]`
 - `order get [order-id]`
 - `order list`
 - `order event list [order-id]`
