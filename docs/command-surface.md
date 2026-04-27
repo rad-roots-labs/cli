@@ -32,10 +32,12 @@ Supported global flags:
 --no-color
 ```
 
-JSON output uses the standard envelope with `operation_id` equal to `kind`.
-Unsupported output modes return a structured `invalid_input` envelope. Operations
-with required approval return `approval_required` with exit code `6` unless
-`--approval-token` is present or `--dry-run` is active.
+Human output is the default and uses concise status text. JSON output uses the
+standard envelope with `operation_id` equal to `kind`. NDJSON output uses
+newline-delimited frame records for operations that support it. Unsupported
+output modes or unsupported NDJSON requests return structured `invalid_input`
+output. Operations with required approval return `approval_required` with exit
+code `6` unless `--approval-token` is present or `--dry-run` is active.
 `--approval-token` is local mutation-confirmation input, not authentication or
 remote signer approval.
 

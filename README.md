@@ -53,7 +53,8 @@ MYC-selected configuration fails closed with `signer_mode_deferred` and must not
 execute the configured MYC binary. Remote signer success flows and public
 signer-session lifecycle commands are deferred.
 
-Machine-readable command output uses the standard envelope:
+Human output is concise status text for interactive use. JSON output uses the
+standard envelope:
 
 - `schema_version`
 - `operation_id`
@@ -67,6 +68,10 @@ Machine-readable command output uses the standard envelope:
 - `warnings`
 - `errors`
 - `next_actions`
+
+NDJSON output uses newline-delimited frame records for operations that support
+streaming or machine-followable frame output. Unsupported NDJSON requests fail
+with structured `invalid_input` output.
 
 ## Example Flows
 
