@@ -30,27 +30,29 @@ Top-level namespaces:
 
 - default output is `human`
 - `--format <human|json|ndjson>` is the global format selector
-- `--account-id`, `--farm-id`, `--profile`, `--signer-session-id`, and `--relay`
-  scope runtime context
+- `--account-id` and `--relay` scope runtime context
 - `--offline` and `--online` select network posture
 - `--dry-run` is available on registry-approved mutation operations
-- `--approval-token` carries approval input for operations that require it
+- `--approval-token` carries local mutation-confirmation input for operations
+  that require it
 - `--no-input`, `--quiet`, `--verbose`, `--trace`, and `--no-color` control
   interaction and output posture
 
 ## Signer Runtime Mode
 
-Signer mode is selected by runtime configuration. The default mode is `local`.
-Use `RADROOTS_SIGNER=local|myc` or this app or workspace config:
+Signer mode is selected by runtime configuration. The default mode is `local`,
+which uses the selected local account signer. Use `RADROOTS_SIGNER=local` or
+this app or workspace config:
 
 ```toml
 [signer]
-mode = "myc"
+mode = "local"
 ```
 
 Inspect the selected mode with `radroots --format json signer status get`. MYC
-status inspection uses `RADROOTS_MYC_EXECUTABLE` or `[myc].executable` when the
-selected mode is `myc`.
+configuration remains guarded by tests for status parsing and no-fallback
+behavior, but remote signer success flows are not part of the documented public
+workflow.
 
 Machine-readable command output uses the standard envelope:
 
@@ -82,7 +84,7 @@ radroots --format json --dry-run order submit <order-id>
 Seller flow:
 
 ```bash
-radroots --format json listing create --output listing.toml --key eggs --title Eggs --bin-id bin-1 --quantity-amount 1 --quantity-unit dozen --price-amount 6 --price-currency USD --price-per-amount 1 --price-per-unit dozen --available 10
+radroots --format json listing create --output listing.toml --key eggs --title Eggs --bin-id bin-1 --quantity-amount 1 --quantity-unit each --price-amount 6 --price-currency USD --price-per-amount 1 --price-per-unit each --available 10
 radroots --format json listing validate listing.toml
 radroots --format json --dry-run listing publish listing.toml
 radroots --format json order list

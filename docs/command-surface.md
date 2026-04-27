@@ -18,9 +18,6 @@ Supported global flags:
 ```text
 --format human|json|ndjson
 --account-id <account-id>
---farm-id <farm-id>
---profile <profile-name>
---signer-session-id <session-id>
 --relay <relay-url>
 --offline
 --online
@@ -39,22 +36,27 @@ JSON output uses the standard envelope with `operation_id` equal to `kind`.
 Unsupported output modes return a structured `invalid_input` envelope. Operations
 with required approval return `approval_required` with exit code `6` unless
 `--approval-token` is present or `--dry-run` is active.
+`--approval-token` is local mutation-confirmation input, not authentication or
+remote signer approval.
 
 ## Signer Runtime Mode
 
-The `signer status get` operation reports signer mode and readiness. The signer
-mode is selected by runtime configuration:
+The `signer status get` operation reports signer mode and readiness. The
+default signer mode is `local`, which uses the selected local account signer.
+Signer mode is selected by runtime configuration:
 
 ```text
-RADROOTS_SIGNER=local|myc
+RADROOTS_SIGNER=local
 ```
 
 ```toml
 [signer]
-mode = "local" # or "myc"
+mode = "local"
 ```
 
-MYC status inspection uses `RADROOTS_MYC_EXECUTABLE` or `[myc].executable`.
+MYC configuration remains covered by guardrail tests for status parsing and
+no-fallback behavior. Remote signer success flows are not part of the documented
+public workflow.
 
 ## Operations
 
@@ -150,7 +152,7 @@ radroots --format json --dry-run order submit <order-id>
 Seller flow:
 
 ```bash
-radroots --format json listing create --output listing.toml --key eggs --title Eggs --bin-id bin-1 --quantity-amount 1 --quantity-unit dozen --price-amount 6 --price-currency USD --price-per-amount 1 --price-per-unit dozen --available 10
+radroots --format json listing create --output listing.toml --key eggs --title Eggs --bin-id bin-1 --quantity-amount 1 --quantity-unit each --price-amount 6 --price-currency USD --price-per-amount 1 --price-per-unit each --available 10
 radroots --format json listing validate listing.toml
 radroots --format json --dry-run listing publish listing.toml
 radroots --format json order list
