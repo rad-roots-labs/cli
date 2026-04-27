@@ -8,7 +8,7 @@ the acceptance coverage in `tests/target_cli.rs`.
 The root help surface exposes these namespaces:
 
 ```text
-workspace health config account signer relay store sync runtime job farm listing market basket order
+workspace health config account signer relay store sync farm listing market basket order
 ```
 
 ## Global Flags
@@ -41,8 +41,7 @@ output.
 For supported mutation operations, `--dry-run` validates arguments, local
 configuration, local state, path collisions, parseability, selected account
 requirements, and local authority where applicable. It does not create durable
-files, write accounts, sign, deliver to relays, submit to daemons, or progress
-workflows.
+files, write accounts, sign, deliver to relays, or progress workflows.
 
 Operations with required approval return `approval_required` with exit code `6`
 unless `--approval-token` is present and non-empty after trimming whitespace or
@@ -102,9 +101,6 @@ Supported mutating dry-run operations:
 - `store backup create`
 - `sync pull`
 - `sync push`
-- `runtime start`
-- `runtime stop`
-- `runtime restart`
 - `farm create`
 - `farm profile update`
 - `farm location update`
@@ -158,15 +154,6 @@ Runtime and network posture:
 - `sync pull`
 - `sync push`
 - `sync watch`
-- `runtime status get`
-- `runtime start`
-- `runtime stop`
-- `runtime restart`
-- `runtime log watch`
-- `runtime config get`
-- `job get`
-- `job list`
-- `job watch`
 
 Seller operations:
 

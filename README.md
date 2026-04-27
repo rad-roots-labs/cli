@@ -18,8 +18,6 @@ Top-level namespaces:
 - `relay`
 - `store`
 - `sync`
-- `runtime`
-- `job`
 - `farm`
 - `listing`
 - `market`
@@ -33,7 +31,7 @@ Top-level namespaces:
 - `--account-id` and `--relay` scope runtime context
 - `--offline` and `--online` select network posture
 - `--dry-run` validates supported mutation operations without durable writes,
-  signing, relay delivery, daemon submission, or workflow progression
+  signing, relay delivery, or workflow progression
 - `--approval-token` carries local mutation-confirmation input for required
   operations; absent, empty, and whitespace-only values are rejected
 - `--no-input`, `--quiet`, `--verbose`, `--trace`, and `--no-color` control
