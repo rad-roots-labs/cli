@@ -77,8 +77,10 @@ Buyer flow:
 radroots --format json market product search eggs
 radroots --format json basket create basket_flow
 radroots --format json basket item add basket_flow --listing-addr 30402:1111111111111111111111111111111111111111111111111111111111111111:AAAAAAAAAAAAAAAAAAAAAg --bin-id bin-1 --quantity 2
-radroots --format json basket quote create basket_flow
-radroots --format json --dry-run order submit <order-id>
+radroots --format json basket quote create basket_flow > quote.json
+ORDER_ID="$(jq -r '.result.quote.order_id' quote.json)"
+radroots --format json order list
+radroots --format json --dry-run order submit "$ORDER_ID"
 ```
 
 Seller flow:
