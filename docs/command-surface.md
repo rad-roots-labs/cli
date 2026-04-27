@@ -36,10 +36,18 @@ Human output is the default and uses concise status text. JSON output uses the
 standard envelope with `operation_id` equal to `kind`. NDJSON output uses
 newline-delimited frame records for operations that support it. Unsupported
 output modes or unsupported NDJSON requests return structured `invalid_input`
-output. Operations with required approval return `approval_required` with exit
-code `6` unless `--approval-token` is present or `--dry-run` is active.
-`--approval-token` is local mutation-confirmation input, not authentication or
-remote signer approval.
+output.
+
+For supported mutation operations, `--dry-run` validates arguments, local
+configuration, local state, path collisions, parseability, selected account
+requirements, and local authority where applicable. It does not create durable
+files, write accounts, sign, deliver to relays, submit to daemons, or progress
+workflows.
+
+Operations with required approval return `approval_required` with exit code `6`
+unless `--approval-token` is present and non-empty after trimming whitespace or
+`--dry-run` is active. `--approval-token` is local mutation-confirmation input,
+not authentication or remote signer approval.
 
 ## Signer Runtime Mode
 
@@ -59,6 +67,63 @@ mode = "local"
 MYC-selected configuration fails closed with `signer_mode_deferred` and must
 not execute the configured MYC binary. Remote signer success flows and public
 signer-session lifecycle commands are deferred.
+
+## Approval And Mutation Failures
+
+Required approval operations:
+
+- `account import`
+- `account remove`
+- `farm publish`
+- `listing publish`
+- `listing archive`
+- `order submit`
+
+Mutation commands return structured non-zero failures when a required mutation
+target is absent. Missing local files, drafts, jobs, orders, listings, and other
+concrete targets return `not_found` with exit code `4`. Missing actor or signer
+authority returns the applicable account, signer, or provider error. Malformed
+targets return `validation_failed`.
+
+Read and inspection commands may return successful `missing` views when no
+mutation was requested.
+
+## Dry-Run Operations
+
+Supported mutating dry-run operations:
+
+- `workspace init`
+- `account create`
+- `account import`
+- `account remove`
+- `account selection update`
+- `account selection clear`
+- `store init`
+- `store backup create`
+- `sync pull`
+- `sync push`
+- `runtime start`
+- `runtime stop`
+- `runtime restart`
+- `farm create`
+- `farm profile update`
+- `farm location update`
+- `farm fulfillment update`
+- `farm publish`
+- `listing create`
+- `listing update`
+- `listing publish`
+- `listing archive`
+- `market refresh`
+- `basket create`
+- `basket item add`
+- `basket item update`
+- `basket item remove`
+- `basket quote create`
+- `order submit`
+
+Commands that do not advertise dry-run support return structured
+`invalid_input` when invoked with `--dry-run`.
 
 ## Operations
 

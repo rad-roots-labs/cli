@@ -32,9 +32,10 @@ Top-level namespaces:
 - `--format <human|json|ndjson>` is the global format selector
 - `--account-id` and `--relay` scope runtime context
 - `--offline` and `--online` select network posture
-- `--dry-run` is available on registry-approved mutation operations
-- `--approval-token` carries local mutation-confirmation input for operations
-  that require it
+- `--dry-run` validates supported mutation operations without durable writes,
+  signing, relay delivery, daemon submission, or workflow progression
+- `--approval-token` carries local mutation-confirmation input for required
+  operations; absent, empty, and whitespace-only values are rejected
 - `--no-input`, `--quiet`, `--verbose`, `--trace`, and `--no-color` control
   interaction and output posture
 
@@ -72,6 +73,14 @@ standard envelope:
 NDJSON output uses newline-delimited frame records for operations that support
 streaming or machine-followable frame output. Unsupported NDJSON requests fail
 with structured `invalid_input` output.
+
+Required approval gates are `account import`, `account remove`, `farm publish`,
+`listing publish`, `listing archive`, and `order submit`. Dry-run skips approval
+requirements because it does not execute the mutation.
+
+Mutation commands fail with structured non-zero output when a required target is
+missing. Read commands may return successful `missing` views when no mutation is
+requested.
 
 ## Example Flows
 
