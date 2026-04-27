@@ -1,156 +1,157 @@
 # Command Surface
 
-This reference is derived from the live parser and help surface in `src/cli.rs`
-and `tests/help.rs`.
+This reference is derived from the live target parser in `src/target_cli.rs` and
+the public acceptance coverage in `tests/target_cli.rs`.
 
-## Workflow-First Entry Points
+## Public Namespaces
 
-Start here:
+The root help surface exposes only these namespaces:
 
-- `setup [seller|buyer|both]` prepares the local workflow posture for sellers,
-  buyers, or both; the default role is `both`
-- `status` reports what is ready and what still needs attention
+```text
+workspace health config account signer relay store sync runtime job farm listing market basket order
+```
 
-Sell from your farm:
+These old or deferred namespaces are rejected:
 
-- `farm init` creates or refreshes a farm draft progressively
-- `farm set <field> <value...>` updates one writable farm field
-- `farm check` reports farm readiness
-- `farm show` prints the current farm draft
-- `farm publish` submits the current farm draft
-- `farm setup` remains available as the one-command compatibility path
+```text
+setup status doctor sell find local net myc rpc product message approval agent
+```
 
-- `sell add <product>` creates a local listing draft
-- `sell show <file>` reads a local listing draft
-- `sell check <file>` validates a local listing draft
-- `sell publish <file>` publishes a listing draft
-- `sell update <file>` updates a published listing from a draft
-- `sell pause <file>` pauses a published listing
-- `sell reprice <file> <price_expr>` changes draft pricing
-- `sell restock <file> <available>` changes draft stock
+## Global Flags
 
-Buy from the market:
+Allowed global flags:
 
-- `market update` uses the current sync update surface and stays honest about
-  present ingest limitations
-- `market search <query...>` searches local market data
-- `market view <listing>` shows one published listing
+```text
+--format human|json|ndjson
+--account-id <account-id>
+--farm-id <farm-id>
+--profile <profile-name>
+--signer-session-id <session-id>
+--relay <relay-url>
+--offline
+--online
+--dry-run
+--idempotency-key <key>
+--correlation-id <id>
+--approval-token <token>
+--no-input
+--quiet
+--verbose
+--trace
+--no-color
+```
 
-- `order create` creates a local order draft
-- `order view <order>` shows one order
-- `order list` lists local orders
-- `order submit <order>` submits a draft
-- `order submit <order> --watch` submits and appends human watch snapshots
-- `order watch <order>` watches a submitted order
-- `order cancel <order>` reports current durable cancel availability for a
-  submitted order
-- `order history` prints submitted order history
+Removed global flags:
 
-Accounts and settings:
+```text
+--output
+--json
+--ndjson
+--yes
+--non-interactive
+```
 
-- `account create` creates a secret-backed local account
-- `account import <path>` imports a watch-only local account from a public
-  identity or identity file
-- `account view` reports the resolved account and whether it came from the
-  stored default
-- `account list` lists local accounts and shows which one is the stored default
-- `account select <selector>` sets the stored default account
-- `account clear-default` clears the stored default account without deleting
-  stored accounts
-- `account remove <selector>` removes one stored account and clears the stored
-  default when that account was active
-- `config show`
+JSON output uses the standard envelope with `operation_id` equal to `kind`.
+Unsupported output modes return a structured `invalid_input` envelope. Operations
+with required approval return `approval_required` with exit code `6` unless
+`--approval-token` is present or `--dry-run` is active.
 
-## Preserved Compatibility Surface
+## MVP Operations
 
-The human-first layer is additive. The lower-level machine-first families remain
-available for automation, troubleshooting, and deeper runtime control:
+Workspace and diagnostics:
 
-- `doctor`
-- `local init|status|export|backup`
-- `sync status|pull|push|watch`
-- `relay list`
-- `net status`
-- `signer status`
-- `rpc status|sessions`
-- `myc status`
-- `runtime install|uninstall|status|start|stop|restart|logs|config show|config set`
-- `job list|get|watch`
-- `listing new|validate|get|publish|update|archive`
-- `find`
+- `workspace init`
+- `workspace get`
+- `health status get`
+- `health check run`
+- `config get`
 
-Compatibility aliases also remain available where the source defines them:
+Accounts and local store:
 
-- `account new|whoami|ls|use`
-- `farm status|get`
-- `order new|get|ls`
-- `relay ls`
-- `job ls`
-
-## Global Behavior
-
-Output modes:
-
-- human output is the default
-- `--output <human|json|ndjson>` is the global output selector
-- `--json` and `--ndjson` remain supported aliases for compatibility
-- singular commands remain human or JSON only unless the parser explicitly
-  allows NDJSON
-
-NDJSON is currently supported on these parser surfaces:
-
+- `account create`
+- `account import`
+- `account get`
 - `account list`
+- `account remove`
+- `account selection get`
+- `account selection update`
+- `account selection clear`
+- `store init`
+- `store status get`
+- `store export`
+- `store backup create`
+
+Runtime and network posture:
+
+- `signer status get`
 - `relay list`
+- `sync status get`
+- `sync pull`
+- `sync push`
+- `sync watch`
+- `runtime status get`
+- `runtime start`
+- `runtime stop`
+- `runtime restart`
+- `runtime log watch`
+- `runtime config get`
+- `job get`
 - `job list`
 - `job watch`
-- `rpc sessions`
+
+Seller operations:
+
+- `farm create`
+- `farm get`
+- `farm profile update`
+- `farm location update`
+- `farm fulfillment update`
+- `farm readiness check`
+- `farm publish`
+- `listing create`
+- `listing get`
+- `listing list`
+- `listing update`
+- `listing validate`
+- `listing publish`
+- `listing archive`
+
+Buyer operations:
+
+- `market refresh`
+- `market product search [query...]`
+- `market listing get [key]`
+- `basket create [basket-id]`
+- `basket get [basket-id]`
+- `basket list`
+- `basket item add [basket-id] --listing-addr <addr>|--listing <key> --bin-id <bin-id> [--quantity <count>]`
+- `basket item update [basket-id] [--item-id <item-id>] [--listing-addr <addr>|--listing <key>] [--bin-id <bin-id>] [--quantity <count>]`
+- `basket item remove [basket-id] [item-id]`
+- `basket validate [basket-id]`
+- `basket quote create [basket-id]`
+- `order submit [order-id] [--watch]`
+- `order get [order-id]`
 - `order list`
-- `order watch`
-- `order history`
-- `sync watch`
-- `find`
-- `market search`
+- `order event list [order-id]`
+- `order event watch [order-id]`
 
-Interactivity and verbosity:
+## Acceptance Flows
 
-- `--no-input` with alias `--non-interactive` disables prompts
-- `--yes` approves supported confirmations
-- `--quiet`, `--verbose`, and `--trace` adjust human output detail
-- `--no-color` disables ANSI color in human output
-
-Mutation behavior:
-
-- `--dry-run` is available on supported mutation commands
-- file-writing flags stay local to the commands that own files:
-  - `sell add --file`
-  - `listing new --output`
-  - `local export --output`
-  - `local backup --output`
-
-## Example Flows
-
-Seller setup and farm draft:
+Buyer flow:
 
 ```bash
-radroots setup seller
-radroots farm init --name "South Field" --location "Santa Fe, NM"
-radroots farm set delivery pickup
-radroots farm check
+radroots --format json market product search eggs
+radroots --format json basket create basket_flow
+radroots --format json basket item add basket_flow --listing-addr 30402:1111111111111111111111111111111111111111111111111111111111111111:AAAAAAAAAAAAAAAAAAAAAg --bin-id bin-1 --quantity 2
+radroots --format json basket quote create basket_flow
+radroots --format json --dry-run order submit <order-id>
 ```
 
-Listing authoring:
+Seller flow:
 
 ```bash
-radroots sell add tomatoes --pack "1 kg" --price "10 USD/kg" --stock 25
-radroots sell check ./listing.toml
-radroots sell publish ./listing.toml
-```
-
-Market and order flow:
-
-```bash
-radroots market search eggs
-radroots market view sf-tomatoes
-radroots order create --listing sf-tomatoes --bin bin-1 --qty 2
-radroots order submit ord_demo --watch
+radroots --format json listing create --output listing.toml --key eggs --title Eggs --bin-id bin-1 --quantity-amount 1 --quantity-unit dozen --price-amount 6 --price-currency USD --price-per-amount 1 --price-per-unit dozen --available 10
+radroots --format json listing validate listing.toml
+radroots --format json --dry-run listing publish listing.toml
+radroots --format json order list
 ```
