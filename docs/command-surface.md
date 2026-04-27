@@ -152,8 +152,10 @@ radroots --format json --dry-run order submit <order-id>
 Seller flow:
 
 ```bash
-radroots --format json listing create --output listing.toml --key eggs --title Eggs --bin-id bin-1 --quantity-amount 1 --quantity-unit each --price-amount 6 --price-currency USD --price-per-amount 1 --price-per-unit each --available 10
+radroots --format json account create
+radroots --format json farm create --name "Green Farm" --location farmstand --delivery-method pickup
+radroots --format json listing create --output listing.toml --key eggs --title Eggs --category eggs --summary "Fresh eggs" --bin-id bin-1 --quantity-amount 1 --quantity-unit each --price-amount 6 --price-currency USD --price-per-amount 1 --price-per-unit each --available 10
 radroots --format json listing validate listing.toml
 radroots --format json --dry-run listing publish listing.toml
-radroots --format json order list
+radroots --format json --approval-token approve listing publish listing.toml
 ```
