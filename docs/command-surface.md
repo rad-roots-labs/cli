@@ -1,25 +1,19 @@
 # Command Surface
 
 This reference is derived from the live target parser in `src/target_cli.rs` and
-the public acceptance coverage in `tests/target_cli.rs`.
+the acceptance coverage in `tests/target_cli.rs`.
 
-## Public Namespaces
+## Namespaces
 
-The root help surface exposes only these namespaces:
+The root help surface exposes these namespaces:
 
 ```text
 workspace health config account signer relay store sync runtime job farm listing market basket order
 ```
 
-These old or deferred namespaces are rejected:
-
-```text
-setup status doctor sell find local net myc rpc product message approval agent
-```
-
 ## Global Flags
 
-Allowed global flags:
+Supported global flags:
 
 ```text
 --format human|json|ndjson
@@ -41,22 +35,28 @@ Allowed global flags:
 --no-color
 ```
 
-Removed global flags:
-
-```text
---output
---json
---ndjson
---yes
---non-interactive
-```
-
 JSON output uses the standard envelope with `operation_id` equal to `kind`.
 Unsupported output modes return a structured `invalid_input` envelope. Operations
 with required approval return `approval_required` with exit code `6` unless
 `--approval-token` is present or `--dry-run` is active.
 
-## MVP Operations
+## Signer Runtime Mode
+
+The `signer status get` operation reports signer mode and readiness. The signer
+mode is selected by runtime configuration:
+
+```text
+RADROOTS_SIGNER=local|myc
+```
+
+```toml
+[signer]
+mode = "local" # or "myc"
+```
+
+MYC status inspection uses `RADROOTS_MYC_EXECUTABLE` or `[myc].executable`.
+
+## Operations
 
 Workspace and diagnostics:
 
@@ -135,7 +135,7 @@ Buyer operations:
 - `order event list [order-id]`
 - `order event watch [order-id]`
 
-## Acceptance Flows
+## Flows
 
 Buyer flow:
 
