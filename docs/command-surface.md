@@ -79,10 +79,15 @@ Required approval operations:
 - `order submit`
 
 Mutation commands return structured non-zero failures when a required mutation
-target is absent. Missing local files, drafts, jobs, orders, listings, and other
+target is absent. Missing local files, drafts, orders, listings, and other
 concrete targets return `not_found` with exit code `4`. Missing actor or signer
 authority returns the applicable account, signer, or provider error. Malformed
 targets return `validation_failed`.
+
+Relay-required trade mutations keep local validation and dry-run preflight.
+Non-dry `farm publish`, `listing publish`, `listing archive`, and
+`order submit` return `operation_unavailable` until direct Nostr relay
+publication is implemented.
 
 Read and inspection commands may return successful `missing` views when no
 mutation was requested.
@@ -219,5 +224,4 @@ radroots --format json listing list
 radroots --format json listing validate "$LISTING_FILE"
 radroots --format json --dry-run listing publish "$LISTING_FILE"
 radroots --format json --dry-run listing archive "$LISTING_FILE"
-radroots --format json --approval-token approve listing publish "$LISTING_FILE"
 ```

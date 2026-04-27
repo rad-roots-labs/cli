@@ -80,6 +80,11 @@ Mutation commands fail with structured non-zero output when a required target is
 missing. Read commands may return successful `missing` views when no mutation is
 requested.
 
+Relay-required trade mutations keep local validation and dry-run preflight.
+Non-dry `farm publish`, `listing publish`, `listing archive`, and
+`order submit` return `operation_unavailable` until direct Nostr relay
+publication is implemented.
+
 ## Example Flows
 
 Buyer flow:
@@ -108,7 +113,6 @@ radroots --format json listing list
 radroots --format json listing validate "$LISTING_FILE"
 radroots --format json --dry-run listing publish "$LISTING_FILE"
 radroots --format json --dry-run listing archive "$LISTING_FILE"
-radroots --format json --approval-token approve listing publish "$LISTING_FILE"
 ```
 
 ## Reference Docs
