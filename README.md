@@ -73,21 +73,22 @@ streaming or machine-followable frame output. Unsupported NDJSON requests fail
 with structured `invalid_input` output.
 
 Required approval gates are `account import`, `account remove`, `farm publish`,
-`listing publish`, `listing archive`, and `order submit`. Dry-run skips approval
-requirements because it does not execute the mutation.
+`listing publish`, `listing archive`, `order submit`, `order accept`, and
+`order decline`. Dry-run skips approval requirements because it does not execute
+the mutation.
 
 Mutation commands fail with structured non-zero output when a required target is
 missing. Read commands may return successful `missing` views when no mutation is
 requested.
 
 Relay-required trade mutations keep local validation and dry-run preflight.
-Non-dry `farm publish`, `listing publish`, `listing archive`, and
-`order submit` require `--approval-token`, a selected secret-backed local
-account, and at least one configured relay from `--relay` or runtime config.
-Successful publish output reports event ids, event kinds, target relays,
-acknowledged relays, and failed relays. Buyer `market refresh` ingests seller
-profile, farm, and active listing events from configured relays into the local
-replica.
+Non-dry `farm publish`, `listing publish`, `listing archive`, `order submit`,
+`order accept`, and `order decline` require `--approval-token`, a selected
+secret-backed local account, and at least one configured relay from `--relay` or
+runtime config. Successful publish output reports event ids, event kinds, target
+relays, acknowledged relays, and failed relays. Buyer `market refresh` ingests
+seller profile, farm, and active listing events from configured relays into the
+local replica.
 
 ## Example Flows
 
@@ -107,6 +108,7 @@ ORDER_ID="$(jq -r '.result.quote.order_id' quote.json)"
 radroots --format json order list
 radroots --format json --dry-run order submit "$ORDER_ID"
 radroots --format json --relay "$RELAY_URL" --approval-token approve order submit "$ORDER_ID"
+radroots --format json --relay "$RELAY_URL" order status get "$ORDER_ID"
 ```
 
 Seller flow:
@@ -123,6 +125,10 @@ radroots --format json --dry-run listing publish "$LISTING_FILE"
 RELAY_URL="ws://127.0.0.1:8080"
 radroots --format json --relay "$RELAY_URL" --approval-token approve farm publish
 radroots --format json --relay "$RELAY_URL" --approval-token approve listing publish "$LISTING_FILE"
+radroots --format json --relay "$RELAY_URL" order event list
+ORDER_ID="<buyer-order-id>"
+radroots --format json --relay "$RELAY_URL" --approval-token approve order accept "$ORDER_ID"
+radroots --format json --relay "$RELAY_URL" order status get "$ORDER_ID"
 radroots --format json --relay "$RELAY_URL" --approval-token approve listing archive "$LISTING_FILE"
 ```
 

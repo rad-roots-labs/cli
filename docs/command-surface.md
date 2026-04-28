@@ -77,6 +77,8 @@ Required approval operations:
 - `listing publish`
 - `listing archive`
 - `order submit`
+- `order accept`
+- `order decline`
 
 Mutation commands return structured non-zero failures when a required mutation
 target is absent. Missing local files, drafts, orders, listings, and other
@@ -85,13 +87,13 @@ authority returns the applicable account, signer, or provider error. Malformed
 targets return `validation_failed`.
 
 Relay-required trade mutations keep local validation and dry-run preflight.
-Non-dry `farm publish`, `listing publish`, `listing archive`, and
-`order submit` require `--approval-token`, a selected secret-backed local
-account, and at least one configured relay from `--relay` or runtime config.
-Successful publish output reports event ids, event kinds, target relays,
-acknowledged relays, and failed relays. Buyer `market refresh` ingests seller
-profile, farm, and active listing events from configured relays into the local
-replica.
+Non-dry `farm publish`, `listing publish`, `listing archive`, `order submit`,
+`order accept`, and `order decline` require `--approval-token`, a selected
+secret-backed local account, and at least one configured relay from `--relay` or
+runtime config. Successful publish output reports event ids, event kinds, target
+relays, acknowledged relays, and failed relays. Buyer `market refresh` ingests
+seller profile, farm, and active listing events from configured relays into the
+local replica.
 
 Read and inspection commands may return successful `missing` views when no
 mutation was requested.
@@ -126,6 +128,8 @@ Supported mutating dry-run operations:
 - `basket item remove`
 - `basket quote create`
 - `order submit`
+- `order accept`
+- `order decline`
 
 Commands that do not advertise dry-run support return structured
 `invalid_input` when invoked with `--dry-run`.
@@ -180,6 +184,9 @@ Seller operations:
 - `listing validate`
 - `listing publish`
 - `listing archive`
+- `order event list [order-id]`
+- `order accept <order-id>`
+- `order decline <order-id> --reason <text>`
 
 Buyer operations:
 
@@ -197,12 +204,32 @@ Buyer operations:
 - `order submit [order-id]`
 - `order get [order-id]`
 - `order list`
-- `order event list [order-id]`
+
+Shared order inspection:
+
+- `order status get <order-id>`
 - `order event watch [order-id]`
 
 `order get` and `order list` inspect local buyer order drafts. Relay-backed
-order event state, seller accept or decline commands, reducer-derived agreement
-state, payment, and fulfillment are deferred.
+order requests and decisions are read from configured relays.
+
+`order event list [order-id]` is a seller-side bounded relay read for buyer
+`TradeOrderRequested` events targeted at the selected seller account.
+
+`order accept <order-id>` and `order decline <order-id> --reason <text>` are
+seller-side signed writes. They fetch the seller-targeted buyer request from
+configured relays, verify the selected seller authority, publish a kind `3423`
+`TradeOrderDecision` event, and chain the decision to the buyer request event.
+
+`order status get <order-id>` is a bounded relay read for buyer and seller
+inspection. It fetches active request and decision events for the order id and
+returns `missing`, `requested`, `accepted`, `declined`, or `invalid` from the
+active order reducer.
+
+`order event watch` remains unavailable as an indefinite subscription surface.
+Payment, fulfillment, buyer receipts, validation receipts, cancellation,
+negotiation, revision, discount, question, and dispute commands are not active
+order commands.
 
 ## Flows
 
@@ -222,6 +249,7 @@ ORDER_ID="$(jq -r '.result.quote.order_id' quote.json)"
 radroots --format json order list
 radroots --format json --dry-run order submit "$ORDER_ID"
 radroots --format json --relay "$RELAY_URL" --approval-token approve order submit "$ORDER_ID"
+radroots --format json --relay "$RELAY_URL" order status get "$ORDER_ID"
 ```
 
 Seller flow:
@@ -238,5 +266,9 @@ radroots --format json --dry-run listing publish "$LISTING_FILE"
 RELAY_URL="ws://127.0.0.1:8080"
 radroots --format json --relay "$RELAY_URL" --approval-token approve farm publish
 radroots --format json --relay "$RELAY_URL" --approval-token approve listing publish "$LISTING_FILE"
+radroots --format json --relay "$RELAY_URL" order event list
+ORDER_ID="<buyer-order-id>"
+radroots --format json --relay "$RELAY_URL" --approval-token approve order accept "$ORDER_ID"
+radroots --format json --relay "$RELAY_URL" order status get "$ORDER_ID"
 radroots --format json --relay "$RELAY_URL" --approval-token approve listing archive "$LISTING_FILE"
 ```
