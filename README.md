@@ -80,21 +80,25 @@ Mutation commands fail with structured non-zero output when a required target is
 missing. Read commands may return successful `missing` views when no mutation is
 requested.
 
-Relay-required seller mutations keep local validation and dry-run preflight.
-Non-dry `farm publish`, `listing publish`, and `listing archive` require
-`--approval-token`, a selected secret-backed local account, and at least one
-configured relay from `--relay` or runtime config. Successful publish output
-reports event ids, event kinds, target relays, acknowledged relays, and failed
-relays. Non-dry `order submit` remains deferred and returns
-`operation_unavailable`.
+Relay-required trade mutations keep local validation and dry-run preflight.
+Non-dry `farm publish`, `listing publish`, `listing archive`, and
+`order submit` require `--approval-token`, a selected secret-backed local
+account, and at least one configured relay from `--relay` or runtime config.
+Successful publish output reports event ids, event kinds, target relays,
+acknowledged relays, and failed relays. Buyer `market refresh` ingests seller
+profile, farm, and active listing events from configured relays into the local
+replica.
 
 ## Example Flows
 
 Buyer flow:
 
 ```bash
+RELAY_URL="ws://127.0.0.1:8080"
 radroots --format json account create
 radroots --format json signer status get
+radroots --format json store init
+radroots --format json --relay "$RELAY_URL" market refresh
 radroots --format json market product search eggs
 radroots --format json basket create basket_flow
 radroots --format json basket item add basket_flow --listing-addr 30402:1111111111111111111111111111111111111111111111111111111111111111:AAAAAAAAAAAAAAAAAAAAAg --bin-id bin-1 --quantity 2
@@ -102,6 +106,7 @@ radroots --format json basket quote create basket_flow > quote.json
 ORDER_ID="$(jq -r '.result.quote.order_id' quote.json)"
 radroots --format json order list
 radroots --format json --dry-run order submit "$ORDER_ID"
+radroots --format json --relay "$RELAY_URL" --approval-token approve order submit "$ORDER_ID"
 ```
 
 Seller flow:
