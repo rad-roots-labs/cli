@@ -30,7 +30,7 @@ radroots_events_codec = { path = "../../../../foundation/libs/rs/radroots/crates
 radroots_identity = { path = "../../../../foundation/libs/rs/radroots/crates/identity" }
 radroots_log = { path = "../../../../foundation/libs/rs/radroots/crates/log" }
 radroots_nostr_accounts = { path = "../../../../foundation/libs/rs/radroots/crates/nostr_accounts", features = ["os-keyring"] }
-radroots_nostr = { path = "../../../../foundation/libs/rs/radroots/crates/nostr", features = ["client"] }
+radroots_nostr = { path = "../../../../foundation/libs/rs/radroots/crates/nostr", features = ["client", "events"] }
 radroots_nostr_signer = { path = "../../../../foundation/libs/rs/radroots/crates/nostr_signer" }
 radroots_protected_store = { path = "../../../../foundation/libs/rs/radroots/crates/protected_store", features = ["std"] }
 radroots_replica_db = { path = "../../../../foundation/libs/rs/radroots/crates/replica_db" }
