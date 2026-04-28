@@ -42,6 +42,9 @@ For supported mutation operations, `--dry-run` validates arguments, local
 configuration, local state, path collisions, parseability, selected account
 requirements, and local authority where applicable. It does not create durable
 files, write accounts, sign, deliver to relays, or progress workflows.
+Seller order decision dry-run also performs the relay-backed request lookup and
+prior-decision preflight required for non-dry execution, then skips only signing
+and relay publication.
 
 Operations with required approval return `approval_required` with exit code `6`
 unless `--approval-token` is present and non-empty after trimming whitespace or
@@ -94,6 +97,11 @@ runtime config. Successful publish output reports event ids, event kinds, target
 relays, acknowledged relays, and failed relays. Buyer `market refresh` ingests
 seller profile, farm, and active listing events from configured relays into the
 local replica.
+
+`order accept --dry-run` and `order decline --dry-run` reject `--offline`
+because a truthful seller decision preflight requires relay access. Public
+seller decision commands also reject a second visible valid seller decision for
+the same request before signing or publishing.
 
 Read and inspection commands may return successful `missing` views when no
 mutation was requested.
@@ -220,11 +228,17 @@ order requests and decisions are read from configured relays.
 seller-side signed writes. They fetch the seller-targeted buyer request from
 configured relays, verify the selected seller authority, publish a kind `3423`
 `TradeOrderDecision` event, and chain the decision to the buyer request event.
+Dry-run performs the same relay-backed request, signer authority,
+canonicalization, and prior-decision preflight without signing or publishing.
+Non-dry execution rejects an already visible valid seller decision for the same
+request.
 
 `order status get <order-id>` is a bounded relay read for buyer and seller
 inspection. It fetches active request and decision events for the order id and
 returns `missing`, `requested`, `accepted`, `declined`, or `invalid` from the
-active order reducer.
+active order reducer. Reducer output is deterministic for the same signed event
+set and reports invalid multiple-request or conflicting-decision state instead
+of choosing by relay arrival order.
 
 `order event watch` remains unavailable as an indefinite subscription surface.
 Payment, fulfillment, buyer receipts, validation receipts, cancellation,

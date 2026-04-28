@@ -90,6 +90,12 @@ relays, acknowledged relays, and failed relays. Buyer `market refresh` ingests
 seller profile, farm, and active listing events from configured relays into the
 local replica.
 
+Seller `order accept --dry-run` and `order decline --dry-run` perform the same
+relay-backed request lookup, local signer authority, canonical payload, and
+prior-decision preflight as non-dry execution. They reject `--offline`, skip
+only signing and publishing, and fail when a valid seller decision for the same
+request is already visible.
+
 ## Example Flows
 
 Buyer flow:
@@ -127,6 +133,7 @@ radroots --format json --relay "$RELAY_URL" --approval-token approve farm publis
 radroots --format json --relay "$RELAY_URL" --approval-token approve listing publish "$LISTING_FILE"
 radroots --format json --relay "$RELAY_URL" order event list
 ORDER_ID="<buyer-order-id>"
+radroots --format json --relay "$RELAY_URL" --dry-run order accept "$ORDER_ID"
 radroots --format json --relay "$RELAY_URL" --approval-token approve order accept "$ORDER_ID"
 radroots --format json --relay "$RELAY_URL" order status get "$ORDER_ID"
 radroots --format json --relay "$RELAY_URL" --approval-token approve listing archive "$LISTING_FILE"
