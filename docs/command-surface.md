@@ -231,14 +231,20 @@ configured relays, verify the selected seller authority, publish a kind `3423`
 Dry-run performs the same relay-backed request, signer authority,
 canonicalization, and prior-decision preflight without signing or publishing.
 Non-dry execution rejects an already visible valid seller decision for the same
-request.
+request. Malformed same-order seller-targeted request candidates and multiple
+valid same-order seller-targeted request candidates fail as `validation_failed`
+before signing or publishing. Decline dry-run preserves the declined decision
+intent and trimmed reason while omitting event id, event kind, and acknowledged
+relays.
 
 `order status get <order-id>` is a bounded relay read for buyer and seller
 inspection. It fetches active request and decision events for the order id and
 returns `missing`, `requested`, `accepted`, `declined`, or `invalid` from the
 active order reducer. Reducer output is deterministic for the same signed event
 set and reports invalid multiple-request or conflicting-decision state instead
-of choosing by relay arrival order.
+of choosing by relay arrival order. Order issues expose stable codes, fields,
+messages, and sorted event ids when event-scoped, so machine clients do not
+depend on Rust debug strings.
 
 `order event watch` remains unavailable as an indefinite subscription surface.
 Payment, fulfillment, buyer receipts, validation receipts, cancellation,

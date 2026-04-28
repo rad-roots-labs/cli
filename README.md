@@ -94,7 +94,10 @@ Seller `order accept --dry-run` and `order decline --dry-run` perform the same
 relay-backed request lookup, local signer authority, canonical payload, and
 prior-decision preflight as non-dry execution. They reject `--offline`, skip
 only signing and publishing, and fail when a valid seller decision for the same
-request is already visible.
+request is already visible. Malformed same-order seller-targeted request
+candidates and multiple valid same-order seller-targeted request candidates
+fail as validation errors before signing or publishing. Order issue output uses
+stable issue codes and sorted event ids for machine clients.
 
 ## Example Flows
 
