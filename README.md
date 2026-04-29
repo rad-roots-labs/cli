@@ -111,12 +111,14 @@ poison the selected actor's view.
 Order inventory accounting is reducer-owned. Buyer `order submit` must reject
 zero or over-available requested quantities before signing, and repeat submit
 deduplicates an identical already visible request instead of publishing a
-second kind `3422` event. Seller `order accept` must verify the referenced
-current listing event, exact request/commitment equality, prior decisions, and
-remaining listing availability before signing. Seller `order decline` is
-terminal and does not reserve inventory. `order status get` exposes inventory
-reservation state, commitment validity, listing event id, and per-bin
-reserved/remaining details when available.
+second kind `3422` event. Buyer `order submit --dry-run` runs those same local
+listing, quantity, signer, and visible-request preflights while skipping only
+the final publish. Seller `order accept` must verify the referenced current
+listing event, exact request/commitment equality, prior decisions, and remaining
+listing availability before signing. Seller `order decline` is terminal and does
+not reserve inventory. `order status get` exposes inventory reservation state,
+commitment validity, listing event id, and per-bin reserved/remaining details
+when available.
 
 ## Example Flows
 
