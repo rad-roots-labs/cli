@@ -101,11 +101,12 @@ stable issue codes and sorted event ids for machine clients.
 
 `order status get` inspects the same signed active order event set used by
 seller decision preflight. It reports malformed same-order request candidates,
-multiple valid request candidates, and conflicting decisions as invalid order
-state with stable issue codes instead of presenting those event sets as valid
-requested orders. When a local account is selected, status inspection admits
-only request events where the selected account is the buyer or seller, so
-same-order events for another actor cannot poison the selected actor's view.
+multiple valid request candidates, wrong-counterparty decisions, and
+conflicting decisions as invalid order state with stable issue codes instead of
+presenting those event sets as valid requested orders. When a local account is
+selected, status inspection admits only request events where the selected
+account is the buyer or seller, so same-order events for another actor cannot
+poison the selected actor's view.
 
 Order inventory accounting is reducer-owned. Buyer `order submit` must reject
 zero or over-available requested quantities before signing, and repeat submit

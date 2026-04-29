@@ -253,10 +253,10 @@ availability; decline remains no-reserve.
 inspection. It fetches active request and decision events for the order id and
 returns `missing`, `requested`, `accepted`, `declined`, or `invalid` from the
 active order reducer. Reducer output is deterministic for the same signed event
-set and reports invalid multiple-request or conflicting-decision state instead
-of choosing by relay arrival order. When a local account is selected, request
-candidate relevance is scoped to events where that account is the buyer or
-seller. Status output also exposes inventory
+set and reports invalid multiple-request, wrong-counterparty-decision, or
+conflicting-decision state instead of choosing by relay arrival order. When a
+local account is selected, request candidate relevance is scoped to events where
+that account is the buyer or seller. Status output also exposes inventory
 reservation state, commitment validity, listing event id, and per-bin reserved
 and remaining quantities when available. Order issues expose stable codes,
 fields, messages, and sorted event ids when event-scoped, so machine clients do
