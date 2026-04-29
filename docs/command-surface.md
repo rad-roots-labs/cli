@@ -98,6 +98,16 @@ relays, acknowledged relays, and failed relays. Buyer `market refresh` ingests
 seller profile, farm, and active listing events from configured relays into the
 local replica.
 
+Order inventory accounting is reducer-owned. Non-dry `order submit` must fail
+before signing when the draft quantity is zero or exceeds current local replica
+availability. It must also check configured relays for same-order request
+candidates: an identical visible valid request is returned as deduplicated, and
+a changed or poisoned visible request fails validation before signing. Seller
+`order accept` must verify the current active listing event, exact
+request/commitment equality, prior decisions, and remaining relay-visible
+listing availability before signing. Seller `order decline` does not reserve
+inventory.
+
 `order accept --dry-run` and `order decline --dry-run` reject `--offline`
 because a truthful seller decision preflight requires relay access. Public
 seller decision commands also reject a second visible valid seller decision for
@@ -235,16 +245,20 @@ request. Malformed same-order seller-targeted request candidates and multiple
 valid same-order seller-targeted request candidates fail as `validation_failed`
 before signing or publishing. Decline dry-run preserves the declined decision
 intent and trimmed reason while omitting event id, event kind, and acknowledged
-relays.
+relays. Accept preflight also verifies the referenced current listing event,
+the accepted inventory commitment multiset, and remaining listing/bin
+availability; decline remains no-reserve.
 
 `order status get <order-id>` is a bounded relay read for buyer and seller
 inspection. It fetches active request and decision events for the order id and
 returns `missing`, `requested`, `accepted`, `declined`, or `invalid` from the
 active order reducer. Reducer output is deterministic for the same signed event
 set and reports invalid multiple-request or conflicting-decision state instead
-of choosing by relay arrival order. Order issues expose stable codes, fields,
-messages, and sorted event ids when event-scoped, so machine clients do not
-depend on Rust debug strings.
+of choosing by relay arrival order. Status output also exposes inventory
+reservation state, commitment validity, listing event id, and per-bin reserved
+and remaining quantities when available. Order issues expose stable codes,
+fields, messages, and sorted event ids when event-scoped, so machine clients do
+not depend on Rust debug strings.
 
 Status inspection uses the same active request validity semantics as seller
 decision preflight. Malformed same-order seller-targeted request candidates and
