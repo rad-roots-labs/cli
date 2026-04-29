@@ -246,6 +246,11 @@ of choosing by relay arrival order. Order issues expose stable codes, fields,
 messages, and sorted event ids when event-scoped, so machine clients do not
 depend on Rust debug strings.
 
+Status inspection uses the same active request validity semantics as seller
+decision preflight. Malformed same-order seller-targeted request candidates and
+multiple valid same-order request candidates are invalid order state in status
+output, not merely skipped relay events.
+
 `order event watch` remains unavailable as an indefinite subscription surface.
 Payment, fulfillment, buyer receipts, validation receipts, cancellation,
 negotiation, revision, discount, question, and dispute commands are not active

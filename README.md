@@ -99,6 +99,12 @@ candidates and multiple valid same-order seller-targeted request candidates
 fail as validation errors before signing or publishing. Order issue output uses
 stable issue codes and sorted event ids for machine clients.
 
+`order status get` inspects the same signed active order event set used by
+seller decision preflight. It reports malformed same-order request candidates,
+multiple valid request candidates, and conflicting decisions as invalid order
+state with stable issue codes instead of presenting those event sets as valid
+requested orders.
+
 ## Example Flows
 
 Buyer flow:
