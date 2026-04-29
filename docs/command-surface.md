@@ -232,12 +232,13 @@ Shared order inspection:
 order requests and decisions are read from configured relays.
 
 `order submit [order-id]` requires local market data, a current local listing
-event id, positive item quantities, enough current listing availability, a local
-buyer signer, and configured relays before publishing a kind `3422` order
-request. Repeat submit checks visible same-order request events and deduplicates
-an identical request instead of publishing a second event. `order submit
---dry-run` runs the same local listing, quantity, signer, and visible-request
-preflights, then skips only the final publish.
+event id, draft item bins that match the current listing primary bin, positive
+item quantities, enough current listing availability, a local buyer signer, and
+configured relays before publishing a kind `3422` order request. Repeat submit
+checks visible same-order request events and deduplicates an identical request
+instead of publishing a second event. `order submit --dry-run` runs the same
+local listing, bin, quantity, signer, and visible-request preflights, then skips
+only the final publish.
 
 `order event list [order-id]` is a seller-side bounded relay read for buyer
 `TradeOrderRequested` events targeted at the selected seller account.
